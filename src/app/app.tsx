@@ -49,14 +49,9 @@ const initialRoot: _Node = {
 };
 
 const App = () => {
-  const { rootId, findNode, initialize, moveNode, selectedNode, updateNode } =
+  const { rootId, findNode, initialize, moveNode, selectedNode, updateNode, getFullTree } =
     useNodeStore();
-  const root = findNode(rootId) || {
-    id: "root",
-    title: "root",
-    children: [],
-    nodeType: "object",
-  };
+  const root = getFullTree();
 
   const [localNode, setLocalNode] = useState<Node | null>(null)
 
@@ -87,7 +82,7 @@ const App = () => {
     <div className="flex">
       <div className="w-4/5 overflow-y-scroll max-h-screen">
         <DragDropContext onDragEnd={onDragEnd}>
-          <DraggableList {...root} /> {/* Passing the root node as props */}
+          <DraggableList {...root} />
         </DragDropContext>
       </div>
 

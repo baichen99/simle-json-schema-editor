@@ -155,6 +155,8 @@ export const useNodeStore = create<State & Action>()((set, get) => ({
   },
   getFullTree: () => {
     const root = get().id2node[get().rootId];
+    if (!root)
+      return { id: "root", title: "root", nodeType: "object", children: [] };
     const walk = (node: Node): _Node => {
       return {
         id: node.id,
