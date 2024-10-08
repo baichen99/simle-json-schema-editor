@@ -1,15 +1,6 @@
 import { nanoid } from "nanoid";
 import { create } from "zustand";
-import { Node, NodeType } from "@/types/node";
-
-// 树根节点，children包含子节点的object
-type _Node = {
-  id: string;
-  title: string;
-  nodeType: NodeType;
-  children: _Node[]; // Keep children as full objects
-  parentId?: string | null;
-};
+import { Node, _Node } from "@/types/node";
 
 type State = {
   rootId: string;

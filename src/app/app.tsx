@@ -51,7 +51,8 @@ const initialRoot: _Node = {
 const App = () => {
   const { rootId, findNode, initialize, moveNode, selectedNode, updateNode, getFullTree } =
     useNodeStore();
-  const root = getFullTree();
+  const tree = getFullTree();
+  const rootNode = findNode(rootId) || { id: "root", title: "root", nodeType: "object", children: [] };
 
   const [localNode, setLocalNode] = useState<Node | null>(null)
 
@@ -60,6 +61,7 @@ const App = () => {
   }, [selectedNode])
 
   const handleUpdate = debounce(() => {
+    if (!selectedNode) return
     updateNode(selectedNode?.id, { ...localNode })
   }, 300)
 
@@ -80,14 +82,14 @@ const App = () => {
 
   return (
     <div className="flex">
-      <div className="w-4/5 overflow-y-scroll max-h-screen">
+      <div className="w-3/4 overflow-y-scroll max-h-screen">
         <DragDropContext onDragEnd={onDragEnd}>
-          <DraggableList {...root} />
+          <DraggableList {...rootNode} />
         </DragDropContext>
       </div>
 
-      <div>
-        <p>{JSON.stringify(root, null, 2)}</p>
+      <div className="w-1/4">
+        <p>{JSON.stringify(tree, null, 2)}</p>
         <Button onClick={() => initialize(initialRoot)}>初始化</Button>{" "}
         <form>
           id： <input type="text" value={selectedNode?.id} readOnly />
@@ -96,6 +98,7 @@ const App = () => {
             type="text"
             value={localNode?.title}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              if (!localNode) return
               setLocalNode({ ...localNode, title: e.target.value });
             }}
           />
@@ -104,6 +107,7 @@ const App = () => {
             type="text"
             value={localNode?.nodeType}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              if (!localNode) return
               setLocalNode({ ...localNode, nodeType: e.target.value as NodeType });
             }}
           />

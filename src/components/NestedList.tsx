@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { Card, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
@@ -16,6 +16,10 @@ type NestedListProps = Node & {
 };
 
 const NestedList: React.FC<NestedListProps> = ({ id, title, nodeType, addEmptyNode, deleteNode, getChildren, setSelectNode }) => {
+    const children = getChildren(id);
+    useEffect(() => {
+        console.log('nodeType changed', id, title, nodeType)
+    }, [nodeType])
     return (
         <Droppable droppableId={id} key={id} type={id}>
             {(dropProvided: DroppableProvided, dropSnapshot: DroppableStateSnapshot) => (
@@ -44,36 +48,39 @@ const NestedList: React.FC<NestedListProps> = ({ id, title, nodeType, addEmptyNo
                         </div>
                     </CardHeader>
 
-                    {getChildren(id).map((item: Node, index: number) => (
-                        ['object', 'array'].includes(item.nodeType) && item.children.length > 0 ? (
-                            <Draggable draggableId={item.id} key={item.id} index={index}>
-                                {(dragProvided: DraggableProvided, dragSnapshot: DraggableStateSnapshot) => (
-                                    <div
-                                        ref={dragProvided.innerRef}
-                                        {...dragProvided.draggableProps}
-                                        {...dragProvided.dragHandleProps}
-                                        className={cn('', dragSnapshot.isDragging && 'bg-green-200')}
-                                    >
-                                        <NestedList
-                                            {...item}
-                                            deleteNode={deleteNode}
-                                            addEmptyNode={addEmptyNode}
-                                            getChildren={getChildren}
-                                            setSelectNode={setSelectNode}
-                                        />
-                                    </div>
-                                )}
-                            </Draggable>
-                        ) : (
-                            <Item
-                                key={item.id}
-                                node={item}
-                                index={index}
-                                deleteNode={deleteNode}
-                                setSelectNode={setSelectNode}
-                            />
+                    {children.map((item: Node, index: number) => {
+                        const key = `${item.id}-${item.nodeType}`
+                        return (
+                            ['object', 'array'].includes(item.nodeType) ? (
+                                <Draggable draggableId={item.id} key={key} index={index}>
+                                    {(dragProvided: DraggableProvided, dragSnapshot: DraggableStateSnapshot) => (
+                                        <div
+                                            ref={dragProvided.innerRef}
+                                            {...dragProvided.draggableProps}
+                                            {...dragProvided.dragHandleProps}
+                                            className={cn('', dragSnapshot.isDragging && 'bg-green-200')}
+                                        >
+                                            <NestedList
+                                                {...item}
+                                                deleteNode={deleteNode}
+                                                addEmptyNode={addEmptyNode}
+                                                getChildren={getChildren}
+                                                setSelectNode={setSelectNode}
+                                            />
+                                        </div>
+                                    )}
+                                </Draggable>
+                            ) : (
+                                <Item
+                                    key={key}
+                                    node={item}
+                                    index={index}
+                                    deleteNode={deleteNode}
+                                    setSelectNode={setSelectNode}
+                                />
+                            )
                         )
-                    ))}
+                    })}
 
                     {['object', 'array'].includes(nodeType) && (
                         <div className="w-full flex justify-center items-center">

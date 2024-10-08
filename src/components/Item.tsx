@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import { Card, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
@@ -14,6 +14,9 @@ type ItemProps = {
 };
 
 const Item: React.FC<ItemProps> = ({ node, index, deleteNode, setSelectNode }) => {
+    useEffect(() => {
+        console.log('Item rendered', node);
+    }, [node])
     return (
         <Draggable draggableId={node.id} index={index}>
             {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (

@@ -5,7 +5,6 @@ import { Node } from '@/types/node';
 
 const DraggableList: React.FC<Node> = (node) => {
     const { deleteNode, addEmptyNode, getChildren, setSelectNode } = useNodeStore();
-
     return (
         <NestedList
             {...node}
