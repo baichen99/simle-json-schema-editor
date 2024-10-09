@@ -1,19 +1,20 @@
-import React from 'react';
-import NestedList from './NestedList';
-import { useNodeStore } from '@/store/node';
-import { Node } from '@/types/node';
+import React from "react";
+import NestedList from "./NestedList";
+import { useNodeStore } from "@/store/node";
+import { Node } from "@/types/node";
 
 const DraggableList: React.FC<Node> = (node) => {
-    const { deleteNode, addEmptyNode, getChildren, setSelectNode } = useNodeStore();
-    return (
-        <NestedList
-            {...node}
-            deleteNode={deleteNode}
-            addEmptyNode={addEmptyNode}
-            getChildren={getChildren}
-            setSelectNode={setSelectNode}
-        />
-    );
+  const { deleteNode, addEmptyNode, getChildren, setSelectNode } =
+    useNodeStore();
+  return (
+    <NestedList
+      {...node}
+      deleteNode={deleteNode}
+      addEmptyNode={addEmptyNode}
+      getChildren={getChildren}
+      setSelectNode={setSelectNode}
+    />
+  );
 };
 
 export default DraggableList;

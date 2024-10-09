@@ -20,7 +20,7 @@ type Action = {
   insertNode: (parentId: string, index: number, node: _Node) => void;
   moveNode: (id: string, parentId: string, index: number) => void;
   updateNode: (id: Node["id"], data: Partial<Node>) => void;
-  getFullTree: () => _Node;
+  getFullTree: () => _Node | null;
 };
 
 export const useNodeStore = create<State & Action>()((set, get) => ({
@@ -146,8 +146,7 @@ export const useNodeStore = create<State & Action>()((set, get) => ({
   },
   getFullTree: () => {
     const root = get().id2node[get().rootId];
-    if (!root)
-      return { id: "root", title: "root", nodeType: "object", children: [] };
+    if (!root) return null;
     const walk = (node: Node): _Node => {
       return {
         id: node.id,

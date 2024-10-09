@@ -5,8 +5,11 @@ import { nanoid } from "nanoid";
 import { DragDropContext } from "react-beautiful-dnd";
 import type { DropResult } from "react-beautiful-dnd";
 import type { NodeType, Node } from "@/types/node";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { debounce } from "lodash-es";
+import PropsEdit from "components/form/PropsEdit";
+import JsonViewSheet from "components/JsonViewSheet";
+import { Card, CardContent, CardHeader } from "components/ui/card";
 
 type _Node = {
   id: string;
@@ -49,25 +52,40 @@ const initialRoot: _Node = {
 };
 
 const App = () => {
-  const { rootId, findNode, initialize, moveNode, selectedNode, updateNode, getFullTree } =
-    useNodeStore();
+  const {
+    rootId,
+    findNode,
+    initialize,
+    moveNode,
+    selectedNode,
+    updateNode,
+    getFullTree,
+  } = useNodeStore();
   const tree = getFullTree();
-  const rootNode = findNode(rootId) || { id: "root", title: "root", nodeType: "object", children: [] };
+  const rootNode = findNode(rootId) as Node;
+  if (!rootNode) {
+    initialize({
+      id: nanoid(),
+      title: "root",
+      nodeType: "object",
+      children: [],
+    });
+  }
 
-  const [localNode, setLocalNode] = useState<Node | null>(null)
+  const [localNode, setLocalNode] = useState<Node | null>(null);
 
   useEffect(() => {
-    setLocalNode(selectedNode)
-  }, [selectedNode])
+    setLocalNode(selectedNode);
+  }, [selectedNode]);
 
-  const handleUpdate = debounce(() => {
-    if (!selectedNode) return
-    updateNode(selectedNode?.id, { ...localNode })
-  }, 300)
+  const handleUpdate = debounce((data) => {
+    if (!selectedNode) return;
+    updateNode(selectedNode?.id, { ...data });
+  }, 300);
 
   useEffect(() => {
-    handleUpdate()
-  }, [localNode])
+    handleUpdate({ ...localNode });
+  }, [localNode, handleUpdate]);
 
   const onDragEnd = (results: DropResult) => {
     const { destination } = results;
@@ -83,35 +101,47 @@ const App = () => {
   return (
     <div className="flex">
       <div className="w-3/4 overflow-y-scroll max-h-screen">
-        <DragDropContext onDragEnd={onDragEnd}>
-          <DraggableList {...rootNode} />
-        </DragDropContext>
+        <Card>
+          <CardHeader className="text-neutral-600 font-light text-2xl">
+            工作区
+          </CardHeader>
+          <CardContent>
+            <DragDropContext onDragEnd={onDragEnd}>
+              <DraggableList {...rootNode} />
+            </DragDropContext>
+          </CardContent>
+        </Card>
       </div>
 
-      <div className="w-1/4">
-        <p>{JSON.stringify(tree, null, 2)}</p>
-        <Button onClick={() => initialize(initialRoot)}>初始化</Button>{" "}
-        <form>
-          id： <input type="text" value={selectedNode?.id} readOnly />
-          title：{" "}
-          <input
-            type="text"
-            value={localNode?.title}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              if (!localNode) return
-              setLocalNode({ ...localNode, title: e.target.value });
-            }}
-          />
-          nodeType：{" "}
-          <input
-            type="text"
-            value={localNode?.nodeType}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              if (!localNode) return
-              setLocalNode({ ...localNode, nodeType: e.target.value as NodeType });
-            }}
-          />
-        </form>
+      <div className="w-1/4 flex flex-col gap-y-2 px-2 py-4">
+        <Card className="p-2">
+          <div className="flex items-center">
+            <JsonViewSheet value={tree!} />
+          </div>
+        </Card>
+        <Button variant="outline" onClick={() => initialize(initialRoot)}>
+          初始化数据
+        </Button>
+        <Card>
+          <CardHeader className="text-neutral-600 font-light text-2xl">
+            属性编辑区
+          </CardHeader>
+          <CardContent>
+            <PropsEdit
+              defaultValues={{
+                title: localNode?.title || "",
+                nodeType: localNode?.nodeType || "null",
+              }}
+              onSubmit={(data) => {
+                handleUpdate(data);
+                setLocalNode({
+                  ...localNode,
+                  ...data,
+                } as Node);
+              }}
+            />
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
