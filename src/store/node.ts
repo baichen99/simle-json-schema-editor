@@ -126,6 +126,7 @@ export const useNodeStore = create<State & Action>()((set, get) => ({
     oldParent.children = oldParent.children.filter((childId) => childId !== id);
     node.parentId = parentId;
     parent.children.splice(index, 0, id);
+    console.log("move", parent.children);
     set({
       id2node: {
         ...get().id2node,
@@ -134,6 +135,7 @@ export const useNodeStore = create<State & Action>()((set, get) => ({
     });
   },
   updateNode: (id: Node["id"], data: Partial<Node>) => {
+    console.log("update", id, data);
     set({
       id2node: {
         ...get().id2node,
@@ -147,14 +149,26 @@ export const useNodeStore = create<State & Action>()((set, get) => ({
   getFullTree: () => {
     const root = get().id2node[get().rootId];
     if (!root) return null;
-    const walk = (node: Node): _Node => {
+    const walk = (node: Node, visited: Set<string>): _Node => {
+      if (visited.has(node.id)) {
+        return {
+          id: node.id,
+          title: node.title,
+          nodeType: node.nodeType,
+          children: [],
+        }; // 或者返回 null
+      }
+      visited.add(node.id);
+
       return {
         id: node.id,
         title: node.title,
         nodeType: node.nodeType,
-        children: node.children.map((childId) => walk(get().id2node[childId])),
+        children: node.children.map((childId) =>
+          walk(get().id2node[childId], visited)
+        ),
       };
     };
-    return walk(root);
+    return walk(root, new Set());
   },
 }));

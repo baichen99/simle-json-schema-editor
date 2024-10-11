@@ -2,10 +2,10 @@ import { useNodeStore } from "@/store/node";
 import DraggableList from "@/components/DraggaleList"; // Adjusted path for the refactored component
 import { Button } from "@/components/ui/button";
 import { nanoid } from "nanoid";
-import { DragDropContext } from "react-beautiful-dnd";
-import type { DropResult } from "react-beautiful-dnd";
+import { DragDropContext } from "@hello-pangea/dnd";
+import type { DropResult } from "@hello-pangea/dnd";
 import type { NodeType, Node } from "@/types/node";
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { debounce } from "lodash-es";
 import PropsEdit from "components/form/PropsEdit";
 import JsonViewSheet from "components/JsonViewSheet";
@@ -71,21 +71,18 @@ const App = () => {
       children: [],
     });
   }
-
-  const [localNode, setLocalNode] = useState<Node | null>(null);
+  const propsEditRef = useRef(null);
 
   useEffect(() => {
-    setLocalNode(selectedNode);
+    propsEditRef.current?.reset({
+      ...selectedNode,
+    });
   }, [selectedNode]);
 
   const handleUpdate = debounce((data) => {
     if (!selectedNode) return;
     updateNode(selectedNode?.id, { ...data });
-  }, 300);
-
-  useEffect(() => {
-    handleUpdate({ ...localNode });
-  }, [localNode, handleUpdate]);
+  }, 30);
 
   const onDragEnd = (results: DropResult) => {
     const { destination } = results;
@@ -97,7 +94,7 @@ const App = () => {
     const index = destination.index;
     moveNode(id, parentId, index);
   };
-
+  console.log("rerender", tree);
   return (
     <div className="flex">
       <div className="w-3/4 overflow-y-scroll max-h-screen">
@@ -128,16 +125,10 @@ const App = () => {
           </CardHeader>
           <CardContent>
             <PropsEdit
-              defaultValues={{
-                title: localNode?.title || "",
-                nodeType: localNode?.nodeType || "null",
-              }}
+              ref={propsEditRef}
               onSubmit={(data) => {
+                console.log("onsubmit", data);
                 handleUpdate(data);
-                setLocalNode({
-                  ...localNode,
-                  ...data,
-                } as Node);
               }}
             />
           </CardContent>

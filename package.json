@@ -43,6 +43,7 @@
     "postinstall": "husky install"
   },
   "dependencies": {
+    "@hello-pangea/dnd": "^17.0.0",
     "@heroicons/react": "2.0.18",
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-dialog": "^1.1.2",
@@ -83,6 +84,7 @@
     "@typescript-eslint/eslint-plugin": "^6.2.1",
     "@typescript-eslint/parser": "^6.2.1",
     "@vitejs/plugin-react": "^4.0.4",
+    "@welldone-software/why-did-you-render": "^8.0.3",
     "autoprefixer": "10.4.13",
     "eslint": "^8.46.0",
     "eslint-plugin-import": "2.27.4",

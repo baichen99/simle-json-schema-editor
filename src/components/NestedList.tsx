@@ -7,7 +7,7 @@ import {
   DroppableStateSnapshot,
   DraggableProvided,
   DraggableStateSnapshot,
-} from "react-beautiful-dnd";
+} from "@hello-pangea/dnd";
 import { Card, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { Trash } from "lucide-react";
@@ -31,6 +31,9 @@ const NestedList: React.FC<NestedListProps> = ({
   getChildren,
   setSelectNode,
 }) => {
+  if (!id) {
+    return;
+  }
   const children = getChildren(id);
   return (
     <Droppable droppableId={id} key={id} type={id}>
@@ -67,9 +70,8 @@ const NestedList: React.FC<NestedListProps> = ({
           </CardHeader>
 
           {children.map((item: Node, index: number) => {
-            const key = `${item.id}-${item.nodeType}`;
             return ["object", "array"].includes(item.nodeType) ? (
-              <Draggable draggableId={item.id} key={key} index={index}>
+              <Draggable draggableId={item.id} key={item.id} index={index}>
                 {(
                   dragProvided: DraggableProvided,
                   dragSnapshot: DraggableStateSnapshot
@@ -95,7 +97,7 @@ const NestedList: React.FC<NestedListProps> = ({
               </Draggable>
             ) : (
               <Item
-                key={key}
+                key={item.id}
                 node={item}
                 index={index}
                 deleteNode={deleteNode}

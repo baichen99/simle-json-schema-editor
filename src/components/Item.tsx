@@ -4,7 +4,7 @@ import {
   Draggable,
   DraggableProvided,
   DraggableStateSnapshot,
-} from "react-beautiful-dnd";
+} from "@hello-pangea/dnd";
 import { Card, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { Trash } from "lucide-react";

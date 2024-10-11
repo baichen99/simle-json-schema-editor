@@ -17,13 +17,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "components/ui/select";
-import { useEffect } from "react";
-import { NodeType } from "@/types/node";
+import { forwardRef, useImperativeHandle } from "react";
+// import { NodeType } from "@/types/node";
 
-type Inputs = {
-  title: string;
-  nodeType: NodeType;
-};
+// type Inputs = {
+//   title: string;
+//   nodeType: NodeType;
+// };
 
 const schema = z.object({
   title: z
@@ -44,73 +44,77 @@ const schema = z.object({
 
 type SchemaType = z.infer<typeof schema>;
 
-const PropsEdit = ({
-  defaultValues,
-  onSubmit,
-}: {
-  defaultValues: Inputs;
-  onSubmit: (data: SchemaType) => void;
-}) => {
-  const form = useForm<SchemaType>({
-    resolver: zodResolver(schema),
-  });
-  useEffect(() => {
-    form.reset(defaultValues);
-  }, [defaultValues, form]);
+const PropsEdit = forwardRef(
+  (
+    {
+      onSubmit,
+    }: {
+      onSubmit: (data: SchemaType) => void;
+    },
+    ref
+  ) => {
+    const form = useForm<SchemaType>({
+      resolver: zodResolver(schema),
+    });
 
-  return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="p-2 flex flex-col gap-y-2"
-      >
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem className="flex items-center">
-              <FormLabel className="mr-2">title</FormLabel>
-              <FormControl>
-                <Input {...field} placeholder="Please enter title" />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="nodeType"
-          render={({ field }) => (
-            <FormItem className="flex items-center">
-              <FormLabel className="mr-2">nodeType</FormLabel>
-              <FormControl>
-                <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="nodeType" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    {[
-                      "object",
-                      "array",
-                      "string",
-                      "integer",
-                      "number",
-                      "boolean",
-                      "null",
-                    ].map((item) => (
-                      <SelectItem key={item} value={item}>
-                        {item}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <Button type="submit">保存</Button>
-      </form>
-    </Form>
-  );
-};
+    useImperativeHandle(ref, () => ({
+      reset: form.reset,
+    }));
+
+    return (
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="p-2 flex flex-col gap-y-2"
+        >
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem className="flex items-center">
+                <FormLabel className="mr-2">title</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Please enter title" />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="nodeType"
+            render={({ field }) => (
+              <FormItem className="flex items-center">
+                <FormLabel className="mr-2">nodeType</FormLabel>
+                <FormControl>
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="nodeType" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white">
+                      {[
+                        "object",
+                        "array",
+                        "string",
+                        "integer",
+                        "number",
+                        "boolean",
+                        "null",
+                      ].map((item) => (
+                        <SelectItem key={item} value={item}>
+                          {item}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <Button type="submit">保存</Button>
+        </form>
+      </Form>
+    );
+  }
+);
 
 export default PropsEdit;
