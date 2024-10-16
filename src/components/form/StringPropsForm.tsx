@@ -17,8 +17,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "components/ui/select";
-import { forwardRef, useImperativeHandle } from "react";
+import { forwardRef, useImperativeHandle, useState } from "react";
 import { Switch } from "components/ui/switch";
+import { Tag, TagInput } from "emblor";
 
 const schema = z.object({
   title: z
@@ -39,6 +40,7 @@ const schema = z.object({
   required: z.boolean().optional(),
   minLength: z.number().optional(),
   maxLength: z.number().optional(),
+  enum: z.array(z.string()).optional(),
 });
 
 type SchemaType = z.infer<typeof schema>;
@@ -52,6 +54,8 @@ const StringPropsForm = forwardRef(
     },
     ref
   ) => {
+    const [enumValue, setEnumValue] = useState<Tag[]>([]);
+    const [activeEnumIndex, setActiveEnumIndex] = useState<number | null>(null);
     const form = useForm<SchemaType>({
       resolver: zodResolver(schema),
       defaultValues: {
@@ -61,6 +65,7 @@ const StringPropsForm = forwardRef(
         required: false,
         minLength: -1,
         maxLength: -1,
+        enum: [],
       },
     });
 
@@ -164,6 +169,36 @@ const StringPropsForm = forwardRef(
                 <FormLabel>maxLength</FormLabel>
                 <FormControl>
                   <Input {...field} placeholder="Please enter maxLength" />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="enum"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>enum</FormLabel>
+                <FormControl>
+                  {/* https://emblor.jaleelbennett.com/styling */}
+                  <TagInput
+                    styleClasses={{
+                      inlineTagsContainer: "flex flex-wrap gap-2 p-0",
+                      input: "h-full w-full",
+                    }}
+                    {...field}
+                    placeholder="Please enter enum"
+                    activeTagIndex={activeEnumIndex}
+                    setActiveTagIndex={setActiveEnumIndex}
+                    tags={enumValue}
+                    setTags={(newEnum) => {
+                      setEnumValue(newEnum);
+                      form.setValue(
+                        "enum",
+                        newEnum.map((item) => item.text)
+                      );
+                    }}
+                  />
                 </FormControl>
               </FormItem>
             )}
