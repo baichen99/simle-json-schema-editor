@@ -71,7 +71,9 @@ const App = () => {
       children: [],
     });
   }
-  const propsEditRef = useRef(null);
+  const propsEditRef = useRef<{
+    reset: (data: Partial<Node>) => void;
+  } | null>(null);
 
   useEffect(() => {
     propsEditRef.current?.reset({

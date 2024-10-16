@@ -195,7 +195,9 @@ const StringPropsForm = forwardRef(
                       setEnumValue(newEnum);
                       form.setValue(
                         "enum",
-                        newEnum.map((item) => item.text)
+                        Array.isArray(newEnum)
+                          ? newEnum.map((item) => item.text)
+                          : []
                       );
                     }}
                   />
