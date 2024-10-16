@@ -152,18 +152,14 @@ export const useNodeStore = create<State & Action>()((set, get) => ({
     const walk = (node: Node, visited: Set<string>): _Node => {
       if (visited.has(node.id)) {
         return {
-          id: node.id,
-          title: node.title,
-          nodeType: node.nodeType,
+          ...node,
           children: [],
         }; // 或者返回 null
       }
       visited.add(node.id);
 
       return {
-        id: node.id,
-        title: node.title,
-        nodeType: node.nodeType,
+        ...node,
         children: node.children.map((childId) =>
           walk(get().id2node[childId], visited)
         ),

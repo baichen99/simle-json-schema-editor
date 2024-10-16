@@ -68,7 +68,6 @@ const NestedList: React.FC<NestedListProps> = ({
               </Button>
             </div>
           </CardHeader>
-
           {children.map((item: Node, index: number) => {
             return ["object", "array"].includes(item.nodeType) ? (
               <Draggable draggableId={item.id} key={item.id} index={index}>

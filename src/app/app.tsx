@@ -94,7 +94,6 @@ const App = () => {
     const index = destination.index;
     moveNode(id, parentId, index);
   };
-  console.log("rerender", tree);
   return (
     <div className="flex">
       <div className="w-3/4 overflow-y-scroll max-h-screen">
@@ -125,6 +124,7 @@ const App = () => {
           </CardHeader>
           <CardContent>
             <PropsEdit
+              nodeType={selectedNode?.nodeType || ""}
               ref={propsEditRef}
               onSubmit={(data) => {
                 console.log("onsubmit", data);
