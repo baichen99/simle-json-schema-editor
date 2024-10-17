@@ -10,6 +10,7 @@ import { debounce } from "lodash-es";
 import PropsEdit from "components/form/PropsEdit";
 import JsonViewSheet from "components/JsonViewSheet";
 import { Card, CardContent, CardHeader } from "components/ui/card";
+import { convertToJsonSchema } from "@/lib/utils";
 
 type _Node = {
   id: string;
@@ -114,7 +115,7 @@ const App = () => {
       <div className="w-1/4 flex flex-col gap-y-2 px-2 py-4">
         <Card className="p-2">
           <div className="flex items-center">
-            <JsonViewSheet value={tree!} />
+            <JsonViewSheet value={convertToJsonSchema(tree!)} />
           </div>
         </Card>
         <Button variant="outline" onClick={() => initialize(initialRoot)}>
@@ -129,7 +130,6 @@ const App = () => {
               nodeType={selectedNode?.nodeType || ""}
               ref={propsEditRef}
               onSubmit={(data) => {
-                console.log("onsubmit", data);
                 handleUpdate(data);
               }}
             />

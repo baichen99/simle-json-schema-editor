@@ -135,7 +135,6 @@ export const useNodeStore = create<State & Action>()((set, get) => ({
     });
   },
   updateNode: (id: Node["id"], data: Partial<Node>) => {
-    console.log("update", id, data);
     set({
       id2node: {
         ...get().id2node,
@@ -145,6 +144,9 @@ export const useNodeStore = create<State & Action>()((set, get) => ({
         },
       },
     });
+    if (id === get().selectedNode?.id) {
+      get().setSelectNode(id);
+    }
   },
   getFullTree: () => {
     const root = get().id2node[get().rootId];

@@ -7,6 +7,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "components/ui/form";
 import { Input } from "components/ui/input";
 import { Button } from "components/ui/button";
@@ -91,6 +92,7 @@ const StringPropsForm = forwardRef(
                     onCheckedChange={field.onChange}
                   />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -103,6 +105,7 @@ const StringPropsForm = forwardRef(
                 <FormControl>
                   <Input {...field} placeholder="Please enter title" />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -134,6 +137,7 @@ const StringPropsForm = forwardRef(
                     </SelectContent>
                   </Select>
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -146,6 +150,7 @@ const StringPropsForm = forwardRef(
                 <FormControl>
                   <Input {...field} placeholder="Please enter pattern" />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -156,8 +161,14 @@ const StringPropsForm = forwardRef(
               <FormItem>
                 <FormLabel>minLength</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="Please enter minLength" />
+                  <Input
+                    type="number"
+                    {...field}
+                    placeholder="Please enter minLength"
+                    onChange={(e) => field.onChange(+e.target.value)}
+                  />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -168,8 +179,14 @@ const StringPropsForm = forwardRef(
               <FormItem>
                 <FormLabel>maxLength</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="Please enter maxLength" />
+                  <Input
+                    type="number"
+                    {...field}
+                    placeholder="Please enter maxLength"
+                    onChange={(e) => field.onChange(+e.target.value)}
+                  />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -202,6 +219,7 @@ const StringPropsForm = forwardRef(
                     }}
                   />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />

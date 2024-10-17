@@ -24,7 +24,11 @@ const JsonViewSheet = ({ value }: Props) => {
           <SheetTitle>JSON View</SheetTitle>
           <SheetDescription></SheetDescription>
         </SheetHeader>
-        <JsonView value={value} />
+        <JsonView
+          value={value}
+          displayDataTypes={false}
+          displayObjectSize={false}
+        />
       </SheetContent>
     </Sheet>
   );
